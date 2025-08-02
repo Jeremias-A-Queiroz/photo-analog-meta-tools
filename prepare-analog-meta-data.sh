@@ -89,43 +89,47 @@ NR==1 { # Processa a linha de cabeçalho
 }
 {
     # $1 é o lensName (o primeiro campo gerado pelo jq)
-    # Remove as aspas do lensName para processamento limpo.
-    lensName_val = $1 # Renomeado para evitar conflito com 'lensName' interno do match
-    gsub(/"/, "", lensName_val)
+    lensName_val = $1
+    gsub(/"/, "", lensName_val)             # Remove aspas
+    # NOVO: Remove qualquer ponto e vírgula ou espaço/tab no final
+    sub(/;[ \t]*$/, "", lensName_val)
+    # NOVO: Remove quaisquer espaços/tabs remanescentes no final (para segurança)
+    sub(/[ \t]*$/, "", lensName_val)
+
 
     # Extrai a distância focal usando uma regex AWK robusta.
     # Procura pelo último número (inteiro ou decimal) que pode ser
-    # seguido por 'mm', 'M', 'Macro' e espaços até o fim da string.
+    # seguido por mm, M, Macro e espaços até o fim da string.
     focal_extracted = "" # Renomeado para maior clareza
-    # CORREÇÃO: Removemos o loop 'while' aninhado. O 'match' principal já faz o trabalho.
-    if (match(lensName_val, /([0-9]+(\.[0-9]+)?)(mm|M|Macro)?\\s*$/, arr)) {
+    # O 'match' principal já faz o trabalho.
+    if (match(lensName_val, /([0-9]+(\.[0-9]+)?)(mm|M|Macro)?\s*$/, arr)) { # Regex original com \s*
         focal_extracted = arr[1] # arr[1] contém apenas o número (grupo de captura 1)
     }
 
     # Reorganiza e imprime os campos.
-    # O AWK reorganiza e injeta o valor de 'focal_extracted' na 10a coluna
+    # O AWK reorganiza e injeta o valor de focal_extracted na 10a coluna
     # conforme a ordem do cabeçalho.
     # Os campos de $2 a $NF são os outros campos do jq após o lensName ($1).
     printf "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", \
-        $2,                 /* _key */ \
-        lensName_val,       /* LensModel */ \
-        $3,                 /* Aperture */ \
-        $4,                 /* ShutterSpeed */ \
-        $5,                 /* Date */ \
-        $6,                 /* Exposure */ \
-        $7,                 /* ImgDesc */ \
-        $8,                 /* Latitude */ \
-        $9,                 /* Longitude */ \
-        focal_extracted,    /* Focal - 10th position */ \
-        $10,                /* LatRef */ \
-        $11,                /* LonRef */ \
-        $12,                /* Make */ \
-        $13,                /* Model */ \
-        $14,                /* LensMake */ \
-        $15,                /* ISO */ \
-        $16,                /* Author */ \
-        $17,                /* GlobalNote */ \
-        $18                  /* Keywords */
+        $2,                 # _key
+        lensName_val,       # LensModel
+        $3,                 # Aperture
+        $4,                 # ShutterSpeed
+        $5,                 # Date
+        $6,                 # Exposure
+        $7,                 # ImgDesc
+        $8,                 # Latitude
+        $9,                 # Longitude
+        focal_extracted,    # Focal - 10th position
+        $10,                # LatRef
+        $11,                # LonRef
+        $12,                # Make
+        $13,                # Model
+        $14,                # LensMake
+        $15,                # ISO
+        $16,                # Author
+        $17,                # GlobalNote
+        $18                 # Keywords
 }
 ' > "$OUTPUT_CSV_FILE"
 
