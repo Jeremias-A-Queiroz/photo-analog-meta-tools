@@ -43,7 +43,7 @@ IMAGE_TYPE=""
 CSV_FILE=""
 FILM_NAME="" # Nova variável para o nome do filme
 
-while test -n "$1"
+while test -n "${1-}"
 do
     case "$1" in
         -h)
