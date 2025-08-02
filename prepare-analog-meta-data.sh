@@ -1,16 +1,14 @@
 #!/bin/bash
-# prepare-afilm-data.sh
+# prepare-analog-meta-data.sh
 #
 # Criador: Jeremias Alves Queiroz
-# Data: 29/05/2024
+# Data: 01/08/2025 (Refatorado por Gemini)
 #
-# Versao 1.1: Automatiza a conversão de JSON do Afilm para CSV.
-#             CORRIGE ERRO NO AWK (EXTRAÇÃO DE FOCAL LENGTH).
-#             Chaves JSON reais, 'S'/'W' para GPS Ref fixos,
-#             remoção de 'f/' da abertura.
-#             Reorganiza mapeamento de 'Comment', 'UserComment', 'ImageDescription'.
-#             Adiciona coluna para 'Keywords'.
-#             OTIMIZA NOMES DE CABEÇALHO DO CSV PARA MELHOR VISUALIZAÇÃO NO Emacs.
+# Versao 0.2.0: Prepara dados do Afilm para EXIF.
+#               - Corrige a extração da distância focal ('Focal') no AWK.
+#               - Ajusta o formato da data para 'YYYY:MM:DD HH:MM:SS' (padrão EXIF).
+#               - Corrige erros de sintaxe nos comentários do AWK.
+#               - Renomeado de 'prepare-afilm-data.sh' para escopo mais amplo.
 
 set -euo pipefail
 
@@ -61,7 +59,8 @@ jq -r '
         $_key,
         ($frame.aperture | sub("f/";"") // ""),
         $frame.shutterSpeed,
-        ($frame.date | split("T")[0]),
+        # MODIFICADO: Formato da data para YYYY:MM:DD HH:MM:SS (padrão EXIF)
+        ($frame.date | sub("T";" ") | sub("\\..*";"") | gsub("-";":")),
         ($frame.exposureValue | tostring),
         $frame.note,
         ($frame.location.latitude | tostring),
@@ -101,8 +100,8 @@ NR==1 { # Processa a linha de cabeçalho
     # Procura pelo último número (inteiro ou decimal) que pode ser
     # seguido por mm, M, Macro e espaços até o fim da string.
     focal_extracted = "" # Renomeado para maior clareza
-    # O 'match' principal já faz o trabalho.
-    if (match(lensName_val, /([0-9]+(\.[0-9]+)?)(mm|M|Macro)?\s*$/, arr)) { # Regex original com \s*
+    # O match principal já faz o trabalho.
+    if (match(lensName_val, /([0-9]+(\.[0-9]+)?)(mm|M|Macro)?\s*$/, arr)) {
         focal_extracted = arr[1] # arr[1] contém apenas o número (grupo de captura 1)
     }
 
