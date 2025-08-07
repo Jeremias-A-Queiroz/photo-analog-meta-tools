@@ -218,7 +218,8 @@ do
     [ -n "${ar18[$i]}" ] && EXIF_COMMAND+=" -Comment=\"${ar18[$i]}\" -UserComment=\"${ar18[$i]}\"" # Nova atribuição para Comment/UserComment
     [ -n "${ar17[$i]}" ] && EXIF_COMMAND+=" -Author=\"${ar17[$i]}\""
     [ -n "$FILM_NAME" ] && EXIF_COMMAND+=" -FilmType=\"$FILM_NAME\"" # Adiciona FilmType
-    [ -n "${ar19[$i]}" ] && EXIF_COMMAND+=" -Keywords=\"${ar19[$i]}\"" # Adiciona Keywords
+    # Adiciona Keywords, usando -sep para interpretar vírgulas como delimitador
+    [ -n "${ar19[$i]}" ] && EXIF_COMMAND+=" -sep ',' -Keywords=\"${ar19[$i]}\""
 
     # Executa o comando exiftool
     eval "$EXIF_COMMAND" "$matched_files"
