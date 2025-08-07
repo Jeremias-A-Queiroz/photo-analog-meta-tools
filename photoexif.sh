@@ -2,9 +2,9 @@
 # photoexif.sh
 #
 # Criador: Jeremias Alves Queiroz
-# Data: 29/05/2024
+# Data: 06/08/2024
 #
-# Versao 0.4: Unificada para JPG e TIFF.
+# Versao 0.4.2: Unificada para JPG e TIFF.
 #             Adiciona seleção de tipo de imagem por parâmetro (-t).
 #             Melhora a leitura do CSV e a correspondência com fotos.
 #             Implementa FilmType via -f ou prompt.

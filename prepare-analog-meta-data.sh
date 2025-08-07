@@ -2,7 +2,7 @@
 # prepare-analog-meta-data.sh
 #
 # Criador: Jeremias Alves Queiroz
-# Data: 01/08/2025 (Refatorado por Gemini)
+# Data: 01/08/2025 
 #
 # Versao 0.2.0: Prepara dados do Afilm para EXIF.
 #               - Corrige a extração da distância focal ('Focal') no AWK.
