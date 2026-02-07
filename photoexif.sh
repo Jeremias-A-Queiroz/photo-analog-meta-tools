@@ -9,6 +9,7 @@
 #             Melhora a leitura do CSV e a correspondência com fotos.
 #             Implementa FilmType via -f ou prompt.
 #             Novos mapeamentos para ImageDescription, UserComment, Comment, Keywords.
+# Versao 0.5.0: Ajuste permitindo inserir tags em arquivos webp
 
 set -euo pipefail
 
@@ -82,14 +83,14 @@ done
 
 # Verifica se o tipo de imagem foi fornecido
 if [ -z "$IMAGE_TYPE" ]; then
-    echo "Erro: O tipo de imagem (-t jpg ou -t tif) é obrigatório." >&2
+    echo "Erro: O tipo de imagem (-t jpg, -t tif ou -t webp) é obrigatório." >&2
     echo "$ajuda" >&2
     exit 1
 fi
 
 # Verifica se o tipo de imagem é válido
-if [[ "$IMAGE_TYPE" != "jpg" && "$IMAGE_TYPE" != "tif" ]]; then
-    echo "Erro: Tipo de imagem inválido. Use 'jpg' ou 'tif'." >&2
+if [[ "$IMAGE_TYPE" != "jpg" && "$IMAGE_TYPE" != "tif" && "$IMAGE_TYPE" != "webp" ]]; then
+    echo "Erro: Tipo de imagem inválido. Use 'jpg', 'tif' ou 'webp'." >&2
     echo "$ajuda" >&2
     exit 1
 fi

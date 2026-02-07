@@ -1,0 +1,25 @@
+$	photoexif.sh	/^            echo -n $(basename "$0")$/
+AFILM_ZIP_FILE	prepare-analog-meta-data.sh	38
+ARRAY	prepare-analog-meta-data.sh	77
+BEGIN	prepare-analog-meta-data.sh	79
+Bash	README.md	21
+CSV_FILE	photoexif.sh	102
+EXIF_COMMAND	photoexif.sh	201
+FILM_NAME	photoexif.sh	124
+NR	prepare-analog-meta-data.sh	83
+ajuda	photoexif.sh	17
+ajuda	prepare-analog-meta-data.sh	15
+ajuda	TAGS	3
+csv_data_lines	photoexif.sh	188
+csv_data_lines	TAGS	8
+fotos	README.md	/^Este script aplica os metadados EXIF contidos no C/
+houver	README.md	64
+num_csv_files	photoexif.sh	100
+photo_file_pattern	photoexif.sh	190
+photo_file_pattern	TAGS	9
+photos	README.md	/^This script applies the EXIF metadata contained in/
+present	README.md	21
+proceeding	README.md	21
+prosseguir	README.md	64
+sh	TAGS	2
+workflow	README.md	3
