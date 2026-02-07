@@ -14,6 +14,7 @@ csv_data_lines	photoexif.sh	188
 csv_data_lines	TAGS	8
 fotos	README.md	/^Este script aplica os metadados EXIF contidos no C/
 houver	README.md	64
+make_dir	dtexport.sh	/^function make_dir () {$/
 num_csv_files	photoexif.sh	100
 photo_file_pattern	photoexif.sh	190
 photo_file_pattern	TAGS	9

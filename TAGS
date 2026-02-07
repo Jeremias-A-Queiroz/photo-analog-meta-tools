@@ -1,4 +1,7 @@
 
+dtexport.sh,28
+function make_dir 151,5030
+
 photoexif.sh,238
 ajuda=17,534
             echo -n $(56,1814
@@ -28,3 +31,5 @@ Este script aplica os metadados EXIF contidos no CSV gerado por `prepare-analog-
 
 tags,44
 $	photoexif.sh	/^            echo -n $(1,0
+
+dtexport.sh~,0
