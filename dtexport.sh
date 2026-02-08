@@ -8,12 +8,6 @@
 #
 # Jeremias A Queiroz, Fevereiro de 2026
 
-
-# --- inicio codigo Novo
-
-#!/bin/bash
-# dtexport.sh
-
 # --- Variáveis iniciais --- 
 CURRENT_DIR_NAME=$(basename "$PWD")
 PICTURES_PATH=$(xdg-user-dir PICTURES)
@@ -100,92 +94,24 @@ done
 # 3. Aqui entrariam as chamadas do darktable-cli usando as variáveis validadas
 echo -e "\n>>> Iniciando exportação via darktable-cli..."
 # Exemplo: darktable-cli . "$DEST_LD_PATH" --width "$RES_LD" ...
-
+for i in *.tif
+do   darktable-cli "$i" "$DEST_LD_PATH"/"${i%.tif}.webp" --verbose \
+		   --width 1050 --height 1050 --hq 1 --core \
+		   --conf plugins/imageio/format/webp/quality=95 \
+		   --conf plugins/imageio/format/webp/comp_level=6 \
+		   --conf plugins/imageio/format/webp/lossless=0 \
+		   --conf plugins/imageio/format/webp/icc_link=1 \
+		   --conf plugins/imageio/format/webp/profile=srgb
+done && for i in *.tif
+do darktable-cli "$i" $DEST_SD_PATH --verbose --width 2560 --height 2560 \
+		 --hq 1 --core --conf plugins/imageio/format/jpeg/quality=95 \
+		 --conf plugins/imageio/format/jpeg/profile=srgb \
+		 --conf plugins/imageio/format/jpeg/icc_link=1
+done && for i in *.tif
+do darktable-cli "$i" $DEST_HD_PATH --verbose --width 4606 --height 4606 --hq 1 \
+		 --core --conf plugins/imageio/format/jpeg/quality=95 \
+		 --conf plugins/imageio/format/jpeg/profile=srgb \
+		 --conf plugins/imageio/format/jpeg/icc_link=1
+done && \
 echo "Concluído!"
-
-# --- fim codigo novo
-
-
-
-
-# --- Variaveis iniciais --- 
-# Usa a variavel de ambiente $PWD, que automaticamente contém o caminho
-# completo do diretório atual. O comandobasename extrai a última
-# componente do caminho.
-CURRENT_DIR_NAME=$(basename "$PWD")
-
-# Utiliza o comando xdg-user-dir para encontrar a path para a raiz do
-# diretorio de imagens independentemente do idioma
-PICTURES_PATH=$(xdg-user-dir PICTURES)
-
-# Concatena as duas variaveis anteriores para gerar asvariaveis de destino
-DEST_SD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"
-DEST_LD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"-LD
-DEST_HD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"-HD
-
-
-
-# --- Funcoes ---
-
-# Funcao para confirmar a criacao do diretorio
-ask_confirmation() {
-    local prompt_message="$1"
-    local response
-
-    while true; do
-        read -p "$prompt_message (y/N)? " -n 1 -r response
-        echo # Adiciona nova linha após a resposta
-        local response_lc=$(echo "$response" | tr '[:upper:]' '[:lower:]')
-
-        if [[ -z "$response_lc" || "$response_lc" == "n" ]]; then # N é o padrão
-            return 1 # Não
-        elif [[ "$response_lc" == "y" ]]; then
-            return 0 # Sim
-        else
-            echo "Resposta inválida. Por favor, digite 'y' para sim ou 'n' para não."
-        fi
-    done
-}
-
-# Funcao para criacao do diretorio que recebera as imagens
-function make_dir () {
-    if [[ -d "$1" ]]; then
-	return 0
-    else
-	if ask_confirmation "Deseja criar o diretório '$1'?"; then
-            echo "Prosseguindo com a criação do diretório padrão..."
-            mkdir -p "$1"
-            if [[ $? -eq 0 ]]; then
-		echo "✅ Diretório '$1' criado com sucesso."
-		return 0 # Termina a funcao com sucesso
-            else
-		echo "❌ Falha ao criar o diretório padrão '$1'."
-		exit 1 # Termina a função e o script com erro
-            fi
-	else
-	    read -p "Deseja entrar com um nome alternativo para o subdiretório? (Pressione Enter sem digitar nada para sair): " -r ALTERNATIVE_SUBDIR_NAME
-	    echo
-
-	    if [[ -z "$ALTERNATIVE_SUBDIR_NAME" ]]; then
-		echo "Nenhum nome alternativo fornecido. Script finalizado."
-		exit 0
-	    else
-		# Recria a variavel com a PATH de destino
-		ALTERNATIVE_FULL_PATH="$PICTURES_PATH"/"$ALTERNATIVE_SUBDIR_NAME"
-
-		echo "Tentando criar o diretório alternativo: '$ALTERNATIVE_FULL_PATH'"
-		mkdir -p "$ALTERNATIVE_FULL_PATH"
-		if [[ $? -eq 0 ]]; then
-                    echo "✅ Diretório '$ALTERNATIVE_FULL_PATH' criado com sucesso."
-                    echo "Script finalizado com sucesso."
-                    return 0 # Termina a função com sucesso
-		else
-                    echo "❌ Falha ao criar o diretório alternativo '$ALTERNATIVE_FULL_PATH'."
-                    exit 1 # Termina a funcao e o script com erro
-		fi
-    
-	    fi
-	fi
-    fi
-}
 
