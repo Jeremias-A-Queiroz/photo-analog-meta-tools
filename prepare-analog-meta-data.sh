@@ -2,7 +2,7 @@
 # prepare-analog-meta-data.sh
 #
 # Criador: Jeremias Alves Queiroz
-# Data: 01/08/2025 
+# Data: 01/08/2025
 #
 # Versao 0.2.0: Prepara dados do Afilm para EXIF.
 #               - Corrige a extração da distância focal ('Focal') no AWK.
@@ -30,23 +30,23 @@ Instruções para edição no Emacs e uso de Keywords:
 "
 
 if [ "$#" -ne 1 ]; then
-    echo "Erro: Forneça o caminho para o arquivo .zip do Afilm." >&2
-    echo "$ajuda" >&2
-    exit 1
+	echo "Erro: Forneça o caminho para o arquivo .zip do Afilm." >&2
+	echo "$ajuda" >&2
+	exit 1
 fi
 
 AFILM_ZIP_FILE="$1"
 OUTPUT_CSV_FILE="afilm_data_$(date +%Y%m%d_%H%M%S).csv" # Nome de arquivo único
 
 if [ ! -f "$AFILM_ZIP_FILE" ]; then
-    echo "Erro: Arquivo zip '$AFILM_ZIP_FILE' não encontrado." >&2
-    exit 1
+	echo "Erro: Arquivo zip '$AFILM_ZIP_FILE' não encontrado." >&2
+	exit 1
 fi
 
 echo "Descompactando '$AFILM_ZIP_FILE' e extraindo 'data.json'..."
 
-unzip -p "$AFILM_ZIP_FILE" data.json | \
-jq -r '
+unzip -p "$AFILM_ZIP_FILE" data.json |
+	jq -r '
     . as $root |
     # Gera a linha de cabeçalho
     (["_key", "LensModel", "Aperture", "ShutterSpeed", "Date", "Exposure", "ImgDesc", "Latitude", "Longitude", "Focal", "LatRef", "LonRef", "Make", "Model", "LensMake", "ISO", "Author", "GlobalNote", "Keywords"] | join(";")),
@@ -130,7 +130,7 @@ NR==1 { # Processa a linha de cabeçalho
         $17,                # GlobalNote
         $18                 # Keywords
 }
-' > "$OUTPUT_CSV_FILE"
+' >"$OUTPUT_CSV_FILE"
 
 echo "CSV gerado com sucesso: '$OUTPUT_CSV_FILE'"
 echo ""
