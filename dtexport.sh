@@ -11,20 +11,21 @@
 # --- Variáveis iniciais --- 
 CURRENT_DIR_NAME=$(basename "$PWD")
 PICTURES_PATH=$(xdg-user-dir PICTURES)
+IMG_EXTENSION=tif
 
-# Resoluções padrão (conforme discutido no gemini.txt)
+# Resoluções padrão 
 RES_LD="1050"
 RES_SD="2560"
 RES_HD="4606" # Original
 
-# Definição dos caminhos baseada na sua lógica original
+# Definição dos caminhos baseada na logica original.
 DEST_SD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"
 DEST_LD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"-LD
 DEST_HD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"-HD
 
 # --- Funções ---
 
-# Função de Validação (O "Checkpoint" que você pediu)
+# Função de Validação 
 validar_parametros() {
     while true; do
         clear
@@ -38,6 +39,9 @@ validar_parametros() {
         echo "----------------------------------------------------------"
         echo "RESOLUÇÕES (Longo Eixo):"
         echo "  LD: ${RES_LD}px | SD: ${RES_SD}px | HD: ${RES_HD}px (0=orig)"
+	echo "----------------------------------------------------------"
+	echo "Tipo de arquivo"
+	echo "Extenção: $IMG_EXTENSION"
         echo "=========================================================="
         echo ""
         read -p "Os parâmetros acima estão corretos? (y/n/q): " opt
@@ -50,13 +54,14 @@ validar_parametros() {
                 echo -e "\nO que você deseja alterar?"
                 echo "1) Caminhos de Destino (alterar o nome base do projeto)"
                 echo "2) Resoluções"
-                read -p "Escolha (1-2): " edit_opt
+	        echo "3) Tipo de arquivo"
+                read -p "Escolha (1-3): " edit_opt
                 
                 if [ "$edit_opt" = "1" ]; then
                     read -p "Novo nome base para o projeto [$CURRENT_DIR_NAME]: " novo_nome
                     if [[ -n "$novo_nome" ]]; then
                         CURRENT_DIR_NAME="$novo_nome"
-                        # Recalcula os caminhos conforme sua lógica original
+                        # Recalcula os caminhos conforme lógica original
                         DEST_SD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"
                         DEST_LD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"-LD
                         DEST_HD_PATH="$PICTURES_PATH"/"$CURRENT_DIR_NAME"-HD
@@ -65,6 +70,8 @@ validar_parametros() {
                     read -p "Res LD [$RES_LD]: " tmp; RES_LD=${tmp:-$RES_LD}
                     read -p "Res SD [$RES_SD]: " tmp; RES_SD=${tmp:-$RES_SD}
                     read -p "Res HD [$RES_HD]: " tmp; RES_HD=${tmp:-$RES_HD}
+		elif [ "$edit_opt" = "3" ]; then
+		    read -p "Extension [$IMG_EXTENSION]: " tmp; IMG_EXTENSION=${tmp:-$IMG_EXTENSION}
                 fi
                 ;;
             [Qq]* )
@@ -94,20 +101,20 @@ done
 # 3. Aqui entrariam as chamadas do darktable-cli usando as variáveis validadas
 echo -e "\n>>> Iniciando exportação via darktable-cli..."
 # Exemplo: darktable-cli . "$DEST_LD_PATH" --width "$RES_LD" ...
-for i in *.tif
-do   darktable-cli "$i" "$DEST_LD_PATH"/"${i%.tif}.webp" --verbose \
+for i in *."$IMG_EXTENSION"
+do   darktable-cli "$i" "$DEST_LD_PATH"/"${i%."$IMG_EXTENSION"}.webp" --verbose \
 		   --width 1050 --height 1050 --hq 1 --core \
 		   --conf plugins/imageio/format/webp/quality=95 \
 		   --conf plugins/imageio/format/webp/comp_level=6 \
 		   --conf plugins/imageio/format/webp/lossless=0 \
 		   --conf plugins/imageio/format/webp/icc_link=1 \
 		   --conf plugins/imageio/format/webp/profile=srgb
-done && for i in *.tif
+done && for i in *."$IMG_EXTENSION"
 do darktable-cli "$i" $DEST_SD_PATH --verbose --width 2560 --height 2560 \
 		 --hq 1 --core --conf plugins/imageio/format/jpeg/quality=95 \
 		 --conf plugins/imageio/format/jpeg/profile=srgb \
 		 --conf plugins/imageio/format/jpeg/icc_link=1
-done && for i in *.tif
+done && for i in *."$IMG_EXTENSION"
 do darktable-cli "$i" $DEST_HD_PATH --verbose --width 4606 --height 4606 --hq 1 \
 		 --core --conf plugins/imageio/format/jpeg/quality=95 \
 		 --conf plugins/imageio/format/jpeg/profile=srgb \
